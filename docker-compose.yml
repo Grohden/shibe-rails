@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:13.3
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: '${USER}'
+    volumes:
+      - .docker-data/pg13:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
