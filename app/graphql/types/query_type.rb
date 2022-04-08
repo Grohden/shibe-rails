@@ -27,5 +27,13 @@ module Types
       Tag.joins(:picture_tags)
         .where(user_id: user_id, picture_tags: { animal_picture_id: picture_id })
     end
+
+    # FIXME: would be better to paginate
+    field :tags_by_user, [Types::TagType], null: false do
+      argument :user_id, ID, required: true
+    end
+    def tags_by_user(user_id:)
+      Tag.where(user: user_id)
+    end
   end
 end
