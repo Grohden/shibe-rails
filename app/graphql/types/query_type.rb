@@ -18,5 +18,14 @@ module Types
         .joins(:tags)
         .where(tags: { user_id: user_id }, picture_tags: { tag_id: tag_id })
     end
+
+    field :user_tags_by_animal_picture, [Types::TagType], null: false do
+      argument :picture_id, ID, required: true
+      argument :user_id, ID, required: true
+    end
+    def user_tags_by_animal_picture(picture_id:, user_id:)
+      Tag.joins(:picture_tags)
+        .where(user_id: user_id, picture_tags: { animal_picture_id: picture_id })
+    end
   end
 end
