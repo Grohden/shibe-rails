@@ -2,6 +2,14 @@
 
 module Types
   class QueryType < Types::BaseObject
+    field :animal_pictures, Types::AnimalPictureType.connection_type, null: false do
+      description 'All animal pictures'
+    end
+
+    def animal_pictures
+      Connections::SequentialIdConnection.new(AnimalPicture.all)
+    end
+
     field :animal_pictures_by_id, Types::AnimalPictureType, null: false do
       argument :picture_id, ID, required: true
     end
