@@ -58,8 +58,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # graphql
 gem 'graphql'
-gem 'graphiql-rails', group: :development
-gem 'graphql_playground-rails', group: :development
+gem 'graphiql-rails'
+gem 'graphql_playground-rails'
 
 
 # cors
