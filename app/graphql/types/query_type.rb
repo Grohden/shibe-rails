@@ -2,6 +2,8 @@
 
 module Types
   class QueryType < Types::BaseObject
+    field :user_by_id, resolver: Resolvers::UserByIdResolver
+
     field :animal_pictures, Types::AnimalPictureType.connection_type, null: false do
       description 'All animal pictures'
     end
@@ -45,5 +47,6 @@ module Types
     def tags_by_user(user_id:)
       Tag.where(user: user_id)
     end
+
   end
 end
