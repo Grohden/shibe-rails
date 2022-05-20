@@ -14,7 +14,9 @@ module Types
       argument :picture_id, ID, required: true
     end
     def animal_pictures_by_id(picture_id:)
-      AnimalPicture.find(picture_id)
+      # This is gonna become a single query, no matter how many accesses
+      # to this graphql field happen (it batches)
+      dataloader.with(Sources::ActiveRecordObject, AnimalPicture).load(picture_id)
     end
 
     field :animal_pictures_by_user_tag, Types::AnimalPictureType.connection_type, null: false do
