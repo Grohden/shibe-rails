@@ -2,51 +2,12 @@
 
 module Types
   class QueryType < Types::BaseObject
+    # FIXME(gabriel.rohden): would be better to paginate
+    field :tags_by_user, resolver: Resolvers::TagsByUserResolver
     field :user_by_id, resolver: Resolvers::UserByIdResolver
-
-    field :animal_pictures, Types::AnimalPictureType.connection_type, null: false do
-      description 'All animal pictures'
-    end
-
-    def animal_pictures
-      Connections::SequentialIdConnection.new(AnimalPicture.all)
-    end
-
-    field :animal_pictures_by_id, Types::AnimalPictureType, null: false do
-      argument :picture_id, ID, required: true
-    end
-    def animal_pictures_by_id(picture_id:)
-      # This is gonna become a single query, no matter how many accesses
-      # to this graphql field happen (it batches)
-      dataloader.with(Sources::ActiveRecordObject, AnimalPicture).load(picture_id)
-    end
-
-    field :animal_pictures_by_user_tag, Types::AnimalPictureType.connection_type, null: false do
-      argument :tag_id, ID, required: true
-      argument :user_id, ID, required: true
-    end
-    def animal_pictures_by_user_tag(tag_id:, user_id:)
-      AnimalPicture
-        .joins(:tags)
-        .where(tags: { user_id: user_id }, picture_tags: { tag_id: tag_id })
-    end
-
-    field :user_tags_by_animal_picture, [Types::TagType], null: false do
-      argument :picture_id, ID, required: true
-      argument :user_id, ID, required: true
-    end
-    def user_tags_by_animal_picture(picture_id:, user_id:)
-      Tag.joins(:picture_tags)
-        .where(user_id: user_id, picture_tags: { animal_picture_id: picture_id })
-    end
-
-    # FIXME: would be better to paginate
-    field :tags_by_user, [Types::TagType], null: false do
-      argument :user_id, ID, required: true
-    end
-    def tags_by_user(user_id:)
-      Tag.where(user: user_id)
-    end
-
+    field :animal_pictures, resolver: Resolvers::AnimalPicturesResolver
+    field :animal_pictures_by_id, resolver: Resolvers::AnimalPicturesByIdResolver
+    field :animal_pictures_by_user_tag, resolver: Resolvers::AnimalPicturesByUserTagResolver
+    field :user_tags_by_animal_picture, resolver: Resolvers::UserTagsByAnimalPictureResolver
   end
 end
